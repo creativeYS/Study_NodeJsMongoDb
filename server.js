@@ -11,7 +11,7 @@ app.get('/', function(req, res) {
 });
 */
 
-// monggodb test
+/* monggodb test
 var MongoClient = require('mongodb').MongoClient;
 
 var sampleDb = 'mongotest';
@@ -58,8 +58,21 @@ MongoClient.connect('mongodb://localhost:27017/mongotest', function(err, client)
         });
     });
 });
+// test end */
+
+// mongoose test
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var Account = new Schema( {
+    username: {type:String},
+    data_created: {type:Date, default:Date.now},
+    visits: {type:Number, default:0},
+    active:{type:Boolean, default:false}
+});
 // test end
 
+console.log('End');
 /*
 var server = app.listen(app.get('port'), function() {
     console.log('Server up: http://localhost:' + app.get('port'));
