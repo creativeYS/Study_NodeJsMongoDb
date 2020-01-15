@@ -11,6 +11,15 @@ app.get('/', function(req, res) {
 });
 */
 
+/*
+var server = app.listen(app.get('port'), function() {
+    console.log('Server up: http://localhost:' + app.get('port'));
+});
+*/
+
+
+
+
 /* monggodb test
 var MongoClient = require('mongodb').MongoClient;
 
@@ -64,20 +73,40 @@ MongoClient.connect('mongodb://localhost:27017/mongotest', function(err, client)
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+mongoose.connect('mongodb://localhost:27017/mongotest',);
+mongoose.connection.on('open', function() {
+    console.log('Mongoose connected.');
+});
+
 var Account = new Schema( {
     username: {type:String},
-    data_created: {type:Date, default:Date.now},
+    date_created: {type:Date, default:Date.now},
     visits: {type:Number, default:0},
-    active:{type:Boolean, default:false}
+    active:{type:Boolean, default:false},
+    age:{type:Number, required:true, min:13, max:120}
+});
+
+var AccountModel = mongoose.model('Account', Account);
+var newUser = new AccountModel({username:'myId223333'});
+
+newUser.validate(function(err) {
+    console.log(err);
+});
+
+console.log(newUser.username);
+console.log(newUser.date_created);
+console.log(newUser.visits);
+console.log(newUser.active);
+console.log(newUser.age);
+//newUser.age = 20;
+console.log(newUser.age);
+newUser.save();
+
+AccountModel.find({age:{$gt : 18, $lt : 30}}, function(err, accounts) {
+    console.log(accounts.length);
+    mongoose.connection.close();
 });
 // test end
-
-console.log('End');
-/*
-var server = app.listen(app.get('port'), function() {
-    console.log('Server up: http://localhost:' + app.get('port'));
-});
-*/
 
 
 
