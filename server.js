@@ -1,21 +1,21 @@
 var express = require('express'),
 config = require('./server/configure'),
 app = express();
+mongoose = require('mongoose');
+
 app.set('port', process.env.PORT || 3300);
 app.set('views', __dirname + '/views');
 app = config(app);
 
-/*
-app.get('/', function(req, res) {
-    res.send('Hello World');
+mongoose.connect('mongodb://localhost/imgPloadr');
+mongoose.connection.on('open', function() {
+    console.log('Mongoose conected.');
 });
-*/
 
-/*
 var server = app.listen(app.get('port'), function() {
     console.log('Server up: http://localhost:' + app.get('port'));
 });
-*/
+
 
 
 
@@ -69,7 +69,7 @@ MongoClient.connect('mongodb://localhost:27017/mongotest', function(err, client)
 });
 // test end */
 
-// mongoose test
+/* mongoose test
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -124,7 +124,7 @@ AccountModel.find({age:{$gt : 18, $lt : 30}}, function(err, accounts) {
     mongoose.connection.close();
 });
 // test end
-
+*/
 
 
 
