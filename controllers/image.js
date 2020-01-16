@@ -1,45 +1,42 @@
 var fs = require('fs'),
     path = require('path'),
-    sidebar = require('../helpers/sidebar');
+    sidebar = require('../helpers/sidebar'),
+    Models = require('../models');
 
 module.exports = {
     index: function(req, res) {
         //res.send('The image:index controller ' + req.params.image_id);
 
         var viewModel = {
-            image: {
-                uniqueId:       1,
-                title:          'Sample Image 1',
-                description:    'This is a sample.',
-                filename:       'sample1.jpg',
-                views:          0,
-                likes:          0,
-                timestamp:      Date.now
-            },
-            comments: [
-                {
-                    image_id:   1,
-                    email:      'test@testing.com',
-                    name:       'Test Tester',
-                    gravatar:   'http://www.gravatar.com/avatar/9a99fac7b524fa443560ec7b5ece5ca1?d=monsterid&s=45',
-                    comment:    'This is a test comment...',
-                    timestamp:  Date.now()
-                },{
-                    image_id:   1,
-                    email:      'test@testing.com',
-                    name:       'Test Tester',
-                    gravatar:   'http://www.gravatar.com/avatar/9a99fac7b524fa443560ec7b5ece5ca1?d=monsterid&s=45',
-                    comment:    'Another followup comment!',
-                    timestamp:  Date.now()
-                }
-            ]
+            image: {},
+            comments: []
         };
 
-        //res.render('image', viewModel);
-        sidebar(viewModel, function(viewModel) {
-            res.render('image', viewModel);
-        });
+        parameter:
+        Models.Image.findOne({filename:{ $regex:req.params.image_id}},
+            function(err, image) {
+                if(err) { throw err; }
+
+                if(image) {
+                    image.views = image.views + 1;
+                    viewModel.image = image;
+                    image.save();
+
+                    Models.Comment.find({image_id:image._id}, {}, {sort:{'timestamp' :1}},
+                    function(err, comments){
+                        if(err) { throw err; }
+
+                        viewModel.comments = comments;
+                        sidebar(viewModel, function(viewModel) {
+                            res.render('image', viewModel);
+                        });
+                    });                    
+                } else {
+                    res.redirect('/');
+                }
+            });
     },
+
     create: function(req, res) {
         //res.send('The image:create POST controller');
         var saveImage = function() {
