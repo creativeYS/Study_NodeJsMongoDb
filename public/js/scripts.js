@@ -15,4 +15,26 @@ $(function(){
             $('.likes-count').text(data.likes);
         });
     });
+
+    $('#btn-delete').on('click', function(event) {
+        event.preventDefault();
+        var $this = $(this);
+
+        var remove = confirm('Are you sure to delete Image?');
+        if(remove)
+        {
+            var imgId = $(this).data('id');
+    
+            $.ajax({
+                url:'/images/'+imgId,
+                type:'DELETE'
+            }).done(function(result) {
+                if(result) {
+                    $this.removeClass('btn-dange').addClass('btn-success');
+                    $this.find('i').removeClass('fa-times').addClass('fa-check');
+                    $this.append('<span> Deleted! </span>');
+                }
+            });
+        }
+    });
 });
